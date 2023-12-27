@@ -1,0 +1,25 @@
+version: '3'
+services:
+  werperservicedocker:
+    container_name: werper_db_container
+    hostname: werper_host
+    image: mysql
+    restart: always
+    command:
+      - --default-authentication-plugin=mysql_native_password
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --innodb_force_recovery=0
+      - --default-time-zone=America/Sao_Paulo
+    volumes:
+      - werper_db_volume:/var/lib/mysql
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_PASSWORD: ${SQL_DEV_PASS}
+      MYSQL_DATABASE: ${SQL_DEV_DB}
+      MYSQL_USER: ${SQL_DEV_USER}
+      MYSQL_ROOT_PASSWORD: ${SQL_DEV_PASS}
+volumes:
+  werper_db_volume:
+    name: werper_db_vol_name
