@@ -1,7 +1,7 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common'
 import { CreatePersonDto } from './dto/create-person.dto'
 import { UpdatePersonDto } from './dto/update-person.dto'
-import { Person } from './types'
+import { ICreatePersonData, IUpdatePersonData, Person } from './types'
 
 @Injectable()
 export class PeopleUtils {
@@ -93,5 +93,54 @@ export class PeopleUtils {
       phone,
       cellphone
     }
+  }
+
+  newCreatePersonData(createPersonDto: CreatePersonDto): ICreatePersonData {
+    return {
+      name: createPersonDto.name,
+      surname: createPersonDto.surname ? createPersonDto.surname : null,
+      personType: createPersonDto.personType,
+      cpf: createPersonDto.cpf ? createPersonDto.cpf : null,
+      cnpj: createPersonDto.cnpj ? createPersonDto.cnpj : null,
+      birthDate: createPersonDto.birthDate ? createPersonDto.birthDate : null,
+      address: createPersonDto.address ? createPersonDto.address : null,
+      number: createPersonDto.number ? createPersonDto.number : null,
+      city: createPersonDto.city ? createPersonDto.city : null,
+      state: createPersonDto.state ? createPersonDto.state : null,
+      zipCode: createPersonDto.zipCode ? createPersonDto.zipCode : null,
+      complement: createPersonDto.complement
+        ? createPersonDto.complement
+        : null,
+      neighborhood: createPersonDto.neighborhood
+        ? createPersonDto.neighborhood
+        : null,
+      email: createPersonDto.email ? createPersonDto.email : null,
+      phone: createPersonDto.phone ? createPersonDto.phone : null,
+      cellphone: createPersonDto.cellphone ? createPersonDto.cellphone : null
+    }
+  }
+
+  newUpdatePersonData(updatePersonDto: UpdatePersonDto): IUpdatePersonData {
+    const updatePersonData = this.newPerson(
+      updatePersonDto.personId,
+      updatePersonDto.name,
+      updatePersonDto.surname,
+      updatePersonDto.personType,
+      updatePersonDto.cpf,
+      updatePersonDto.cnpj,
+      updatePersonDto.birthDate,
+      updatePersonDto.address,
+      updatePersonDto.number,
+      updatePersonDto.city,
+      updatePersonDto.state,
+      updatePersonDto.zipCode,
+      updatePersonDto.complement,
+      updatePersonDto.neighborhood,
+      updatePersonDto.email,
+      updatePersonDto.phone,
+      updatePersonDto.cellphone
+    )
+
+    return updatePersonData as IUpdatePersonData
   }
 }

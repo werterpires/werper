@@ -25,7 +25,7 @@ export class PeopleRepository {
       throw this.errorsService.handleErrors(
         error,
         '#Não foi pode criar a pessoa',
-        'createPerson'
+        'repository/createPerson'
       )
     }
   }
@@ -44,7 +44,7 @@ export class PeopleRepository {
       throw this.errorsService.handleErrors(
         error,
         '#Não foi possível buscar todas as pessoas',
-        'findAllPeople'
+        'repository/findAllPeople'
       )
     }
   }
@@ -66,7 +66,7 @@ export class PeopleRepository {
       throw this.errorsService.handleErrors(
         error,
         '#Não foi possível buscar a pessoa',
-        'findPersonById'
+        'repository/findPersonById'
       )
     }
   }
@@ -82,7 +82,7 @@ export class PeopleRepository {
       throw this.errorsService.handleErrors(
         error,
         '#Não foi possível atualizar a pessoa',
-        'updatePersonById'
+        'repository/updatePersonById'
       )
     }
   }
@@ -94,7 +94,7 @@ export class PeopleRepository {
       throw this.errorsService.handleErrors(
         error,
         '#Não foi possível deletar a pessoa',
-        'deletePerson'
+        'repository/deletePerson'
       )
     }
   }

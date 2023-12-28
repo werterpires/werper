@@ -1,26 +1,87 @@
-import { Injectable } from '@nestjs/common';
-import { CreatePersonDto } from './dto/create-person.dto';
-import { UpdatePersonDto } from './dto/update-person.dto';
+import { Injectable } from '@nestjs/common'
+import { CreatePersonDto } from './dto/create-person.dto'
+import { UpdatePersonDto } from './dto/update-person.dto'
+import { PeopleUtils } from './people.utils'
+import { ErrorsService } from 'src/shared/errors/errors.service'
+import { PeopleRepository } from './people.repository'
+import { Person } from './types'
 
 @Injectable()
 export class PeopleService {
-  create(createPersonDto: CreatePersonDto) {
-    return 'This action adds a new person';
+  constructor(
+    private readonly peopleUtils: PeopleUtils,
+    private readonly errorsService: ErrorsService,
+    private readonly peopleRepository: PeopleRepository
+  ) {}
+  async createPerson(createPersonDto: CreatePersonDto): Promise<Person> {
+    try {
+      const newPersonData =
+        this.peopleUtils.newCreatePersonData(createPersonDto)
+      const newPerson = await this.peopleRepository.createPerson(newPersonData)
+      return newPerson
+    } catch (error) {
+      throw this.errorsService.handleErrors(
+        error,
+        '#Não foi possível criar a pessoa',
+        'service/createPerson'
+      )
+    }
   }
 
-  findAll() {
-    return `This action returns all people`;
+  findAllPeople() {
+    try {
+      const allPeople = this.peopleRepository.findAllPeople()
+      return allPeople
+    } catch (error) {
+      throw this.errorsService.handleErrors(
+        error,
+        '#Não foi possível buscar todas as pessoas.',
+        'service/findAllPeople'
+      )
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} person`;
+  findPersonById(id: number) {
+    try {
+      const person = this.peopleRepository.findPersonById(id)
+      return person
+    } catch (error) {
+      throw this.errorsService.handleErrors(
+        error,
+        '#Não foi possível buscar a pessoa.',
+        'service/findPersonById'
+      )
+    }
   }
 
-  update(id: number, updatePersonDto: UpdatePersonDto) {
-    return `This action updates a #${id} person`;
+  async updatePersonById(
+    id: number,
+    updatePersonDto: UpdatePersonDto
+  ): Promise<Person> {
+    try {
+      const updatePersonData =
+        this.peopleUtils.newUpdatePersonData(updatePersonDto)
+      const person =
+        await this.peopleRepository.updatePersonById(updatePersonData)
+      return person
+    } catch (error) {
+      throw this.errorsService.handleErrors(
+        error,
+        '#Não foi possível atualizar a pessoa.',
+        'service/updatePersonById'
+      )
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} person`;
+  async remove(id: number): Promise<void> {
+    try {
+      await this.peopleRepository.deletePerson(id)
+    } catch (error) {
+      throw this.errorsService.handleErrors(
+        error,
+        '#Não foi possível atualizar a pessoa.',
+        'service/updatePersonById'
+      )
+    }
   }
 }
