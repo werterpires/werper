@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { KnexModule, KnexModuleOptions } from 'nestjs-knex';
+import { PeopleModule } from './basics/people/people.module';
 import * as fs from 'fs';
 import path from 'path';
 
@@ -47,7 +48,7 @@ const mysqlConfig: KnexModuleOptions = {
   },
 };
 @Module({
-  imports: [KnexModule.forRoot(mysqlConfig)],
+  imports: [KnexModule.forRoot(mysqlConfig), PeopleModule],
   controllers: [AppController],
   providers: [AppService],
 })
