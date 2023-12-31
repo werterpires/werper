@@ -4,7 +4,7 @@ export async function up(knex: Knex): Promise<void> {
   return knex.schema.createTable('people', (table) => {
     table.increments('person_id').primary()
     table.string('name', 60).notNullable()
-    table.string('surname', 100).notNullable()
+    table.string('surname', 100)
     table.string('person_type', 1).notNullable()
     table.string('cpf', 11).unique()
     table.string('cnpj', 14).unique()
