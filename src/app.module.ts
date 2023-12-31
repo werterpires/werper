@@ -1,28 +1,22 @@
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { KnexModule, KnexModuleOptions } from 'nestjs-knex';
-import { PeopleModule } from './basics/people/people.module';
-import { ErrorsModule } from './shared/errors/errors.module';
-import * as fs from 'fs';
-import path from 'path';
+import { Module } from '@nestjs/common'
+import { AppController } from './app.controller'
+import { AppService } from './app.service'
+import { KnexModule, KnexModuleOptions } from 'nestjs-knex'
+import { PeopleModule } from './basics/people/people.module'
+import { UtilsModule } from './shared/utils/utils.module'
+import * as dotenv from 'dotenv'
+dotenv.config()
 
 const mysqlConfig: KnexModuleOptions = {
   config: {
     client: 'mysql2',
     useNullAsDefault: true,
     connection: {
-      host: process.env.DEV ? process.env.SQL_DEV_HOST : process.env.SQL_HOST,
-      user: process.env.DEV ? process.env.SQL_DEV_USER : process.env.SQL_USER,
-      password: process.env.DEV
-        ? process.env.SQL_DEV_PASS
-        : process.env.SQL_PASS,
-      database: process.env.DEV ? process.env.SQL_DEV_DB : process.env.SQL_DB,
-      ssl: process.env.DEV
-        ? undefined
-        : {
-            ca: fs.readFileSync(path.join(__dirname, 'mysql_ca_cert.pem')),
-          },
+      host: process.env.SQL_DEV_HOST,
+      user: process.env.SQL_DEV_USER,
+      password: process.env.SQL_DEV_PASS,
+      database: process.env.SQL_DEV_DB,
+      ssl: undefined,
       typeCast: function (field, next) {
         if (field.type === 'TINY' && field.length === 1) {
           // retorna tipo booleano ou null
@@ -32,25 +26,25 @@ const mysqlConfig: KnexModuleOptions = {
             case '':
             case 'null':
             case 'NULL':
-              return null;
+              return null
             case '0':
-              return false;
+              return false
             case '1':
-              return true;
+              return true
           }
         } else if (field.type === 'DATE' && field.length > 1) {
-          return field.string(); // 1 = true, 0 = false
+          return field.string() // 1 = true, 0 = false
         } else if (field.type === 'DATETIME' && field.length > 1) {
-          return field.string().substring(0, 10); // 1 = true, 0 = false
+          return field.string().substring(0, 10) // 1 = true, 0 = false
         }
-        return next();
-      },
-    },
-  },
-};
+        return next()
+      }
+    }
+  }
+}
 @Module({
-  imports: [KnexModule.forRoot(mysqlConfig), PeopleModule, ErrorsModule],
+  imports: [KnexModule.forRoot(mysqlConfig), PeopleModule, UtilsModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService]
 })
 export class AppModule {}

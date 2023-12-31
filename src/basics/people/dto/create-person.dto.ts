@@ -30,7 +30,7 @@ export class CreatePersonDto {
 
   @IsOptional()
   @IsString()
-  birthDate?: Date | null
+  birthDate?: string | null
 
   @IsOptional()
   @IsString()
