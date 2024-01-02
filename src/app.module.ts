@@ -7,7 +7,7 @@ import { UtilsModule } from './shared/utils/utils.module'
 import * as dotenv from 'dotenv'
 dotenv.config()
 
-const mysqlConfig: KnexModuleOptions = {
+export const mysqlConfig: KnexModuleOptions = {
   config: {
     client: 'mysql2',
     useNullAsDefault: true,

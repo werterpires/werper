@@ -1,12 +1,8 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException
-} from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectKnex, Knex } from 'nestjs-knex'
 import { ICreatePersonData, IUpdatePersonData, Person } from './types'
 import { PeopleUtils } from './people.utils'
-import { ErrorsService } from 'src/shared/errors/errors.service'
+import { ErrorsService } from 'src/shared/utils/errors.service'
 
 @Injectable()
 export class PeopleRepository {
@@ -18,13 +14,51 @@ export class PeopleRepository {
 
   async createPerson(createPersonData: ICreatePersonData): Promise<Person> {
     try {
-      const [personId] = await this.knex('people').insert(createPersonData)
+      const {
+        name,
+        surname,
+        personType,
+        cpf,
+        cnpj,
+        birthDate,
+        address,
+        number,
+        city,
+        state,
+        zipCode,
+        complement,
+        neighborhood,
+        email,
+        phone,
+        cellphone
+      } = createPersonData
+
+      const [personId] = await this.knex('people').insert({
+        name,
+        surname,
+        person_type: personType,
+        cpf,
+        cnpj,
+        birth_date: birthDate,
+        address,
+        number,
+        city,
+        state,
+        zip_code: zipCode,
+        complement,
+        neighborhood,
+        email,
+        phone,
+        cellphone
+      })
+
       const person = await this.findPersonById(personId)
+
       return person
     } catch (error) {
       throw this.errorsService.handleErrors(
         error,
-        '#Não foi pode criar a pessoa',
+        '#Não foi possível criar a pessoa',
         'repository/createPerson'
       )
     }
@@ -38,7 +72,7 @@ export class PeopleRepository {
       }
       //cria uma array de Person a partir da consulta no db
       const allPeople: Person[] =
-        this.peopleUtils.createPeopleArray(peopleConsult)
+        this.peopleUtils.createPeopleArrayFromDB(peopleConsult)
       return allPeople
     } catch (error) {
       throw this.errorsService.handleErrors(
@@ -56,10 +90,11 @@ export class PeopleRepository {
         .where('person_id', id)
 
       if (!peopleConsult) {
-        throw new Error('0')
+        throw new NotFoundException('#Pessoa não encontrada.')
       }
+
       //cria uma pessoa a partir da consulta no db
-      const person: Person = this.peopleUtils.createPerson(peopleConsult)
+      const person: Person = this.peopleUtils.createPersonFromDB(peopleConsult)
 
       return person
     } catch (error) {
@@ -73,9 +108,50 @@ export class PeopleRepository {
 
   async updatePersonById(updatePersonData: IUpdatePersonData): Promise<Person> {
     try {
-      await this.knex('people')
-        .update(updatePersonData)
+      const {
+        personId,
+        name,
+        surname,
+        personType,
+        cpf,
+        cnpj,
+        birthDate,
+        address,
+        number,
+        city,
+        state,
+        zipCode,
+        complement,
+        neighborhood,
+        email,
+        phone,
+        cellphone,
+        updatedAt
+      } = updatePersonData
+      const editsQuantity = await this.knex('people')
+        .update({
+          name,
+          surname,
+          person_type: personType,
+          cpf,
+          cnpj,
+          birth_date: birthDate,
+          address,
+          number,
+          city,
+          state,
+          zip_code: zipCode,
+          complement,
+          neighborhood,
+          email,
+          phone,
+          cellphone,
+          updated_at: updatedAt
+        })
         .where('person_id', updatePersonData.personId)
+      if (editsQuantity === 0) {
+        throw new NotFoundException('#Pessoa não encontrada.')
+      }
       const person = await this.findPersonById(updatePersonData.personId)
       return person
     } catch (error) {
@@ -87,9 +163,15 @@ export class PeopleRepository {
     }
   }
 
-  async deletePerson(id: number): Promise<void> {
+  async deletePersonById(id: number): Promise<void> {
     try {
-      await this.knex('people').delete().where('person_id', id)
+      const deletesQuantity = await this.knex('people')
+        .delete()
+        .where('person_id', id)
+
+      if (deletesQuantity === 0) {
+        throw new NotFoundException('#Pessoa não encontrada.')
+      }
     } catch (error) {
       throw this.errorsService.handleErrors(
         error,
