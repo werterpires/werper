@@ -93,8 +93,6 @@ const updatePersonDto: UpdatePersonDto = {
   personId: 1
 }
 
-let contador = 1
-
 describe('PeopleUtils', () => {
   let peopleUtils: PeopleUtils
   let mockValidatesService: ValidatesService
@@ -113,7 +111,7 @@ describe('PeopleUtils', () => {
     }).compile()
 
     peopleUtils = module.get<PeopleUtils>(PeopleUtils)
-    mockValidatesService = await module.resolve(ValidatesService)
+    mockValidatesService = await module.get<ValidatesService>(ValidatesService)
   })
 
   it('should be defined', () => {

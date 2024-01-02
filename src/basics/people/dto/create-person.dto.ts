@@ -4,7 +4,8 @@ import {
   IsIn,
   IsOptional,
   IsString,
-  Length
+  Length,
+  MaxLength
 } from 'class-validator'
 
 export class CreatePersonDto {
@@ -50,6 +51,7 @@ export class CreatePersonDto {
 
   @IsOptional()
   @IsString()
+  @Length(8, 8)
   zipCode?: string | null
 
   @IsOptional()

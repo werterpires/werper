@@ -116,7 +116,8 @@ export class ValidatesService {
     cpf: string | null,
     cnpj: string | null,
     email: string | null,
-    date: string | null
+    date: string | null,
+    zipeCode: string | null
   ): string {
     let errorMessage = '#'
     if (cpf) {
@@ -140,6 +141,12 @@ export class ValidatesService {
       }
     }
 
+    if (zipeCode) {
+      if (!this.validateZipCode(zipeCode)) {
+        errorMessage += '/CEP inválido/ '
+      }
+    }
+
     errorMessage.trim()
     return errorMessage
   }
@@ -148,5 +155,10 @@ export class ValidatesService {
     const dateRegex = /^([0-9]{1,2})\/([0-9]{1,2})\/([0-9]{4})$/
 
     return !isNaN(Date.parse(date)) && dateRegex.test(date)
+  }
+
+  validateZipCode(zipCode: string): boolean {
+    const zipCodeRegex = /^[0-9]{8}$/
+    return zipCodeRegex.test(zipCode)
   }
 }

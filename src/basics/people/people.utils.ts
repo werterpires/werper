@@ -1,11 +1,18 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common'
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException
+} from '@nestjs/common'
 import { CreatePersonDto } from './dto/create-person.dto'
 import { UpdatePersonDto } from './dto/update-person.dto'
 import { ICreatePersonData, IUpdatePersonData, Person } from './types'
+import { ValidatesService } from 'src/shared/utils/validates.service'
 
 @Injectable()
 export class PeopleUtils {
-  createPeopleArray(consultResult: any[]): Person[] {
+  constructor(private readonly validatesService: ValidatesService) {}
+
+  createPeopleArrayFromDB(consultResult: any[]): Person[] {
     const people: Person[] = consultResult.map((person) => {
       return this.newPerson(
         person.person_id,
@@ -28,10 +35,20 @@ export class PeopleUtils {
       )
     })
 
+    people.forEach((person) => {
+      for (let prop of Object.entries(person)) {
+        if (prop[1] === undefined) {
+          throw new InternalServerErrorException(
+            `Propriedade ${prop[0]} não foi encontrada`
+          )
+        }
+      }
+    })
+
     return people
   }
 
-  createPerson(consultResult: any): Person {
+  createPersonFromDB(consultResult: any): Person {
     const person = this.newPerson(
       consultResult.person_id,
       consultResult.name,
@@ -51,6 +68,14 @@ export class PeopleUtils {
       consultResult.phone,
       consultResult.cellphone
     )
+
+    for (let prop of Object.entries(person)) {
+      if (prop[1] === undefined) {
+        throw new InternalServerErrorException(
+          `Propriedade ${prop[0]} não foi encontrada`
+        )
+      }
+    }
 
     return person
   }
@@ -96,51 +121,81 @@ export class PeopleUtils {
   }
 
   newCreatePersonData(createPersonDto: CreatePersonDto): ICreatePersonData {
+    const errorMessage = this.validatesService.validatePerson(
+      createPersonDto.cpf,
+      createPersonDto.cnpj,
+      createPersonDto.email,
+      createPersonDto.birthDate,
+      createPersonDto.zipCode
+    )
+
+    if (errorMessage.length > 1) {
+      throw new BadRequestException(errorMessage)
+    }
+
     return {
-      name: createPersonDto.name,
-      surname: createPersonDto.surname ? createPersonDto.surname : null,
+      name: createPersonDto.name.trim(),
+      surname: createPersonDto.surname ? createPersonDto.surname.trim() : null,
       personType: createPersonDto.personType,
-      cpf: createPersonDto.cpf ? createPersonDto.cpf : null,
-      cnpj: createPersonDto.cnpj ? createPersonDto.cnpj : null,
-      birthDate: createPersonDto.birthDate ? createPersonDto.birthDate : null,
-      address: createPersonDto.address ? createPersonDto.address : null,
-      number: createPersonDto.number ? createPersonDto.number : null,
-      city: createPersonDto.city ? createPersonDto.city : null,
-      state: createPersonDto.state ? createPersonDto.state : null,
-      zipCode: createPersonDto.zipCode ? createPersonDto.zipCode : null,
+      cpf: createPersonDto.cpf ? createPersonDto.cpf.trim() : null,
+      cnpj: createPersonDto.cnpj ? createPersonDto.cnpj.trim() : null,
+      birthDate: createPersonDto.birthDate
+        ? new Date(createPersonDto.birthDate.trim())
+        : null,
+      address: createPersonDto.address ? createPersonDto.address.trim() : null,
+      number: createPersonDto.number ? createPersonDto.number.trim() : null,
+      city: createPersonDto.city ? createPersonDto.city.trim() : null,
+      state: createPersonDto.state ? createPersonDto.state.trim() : null,
+      zipCode: createPersonDto.zipCode ? createPersonDto.zipCode.trim() : null,
       complement: createPersonDto.complement
-        ? createPersonDto.complement
+        ? createPersonDto.complement.trim()
         : null,
       neighborhood: createPersonDto.neighborhood
-        ? createPersonDto.neighborhood
+        ? createPersonDto.neighborhood.trim()
         : null,
-      email: createPersonDto.email ? createPersonDto.email : null,
-      phone: createPersonDto.phone ? createPersonDto.phone : null,
-      cellphone: createPersonDto.cellphone ? createPersonDto.cellphone : null
+      email: createPersonDto.email ? createPersonDto.email.trim() : null,
+      phone: createPersonDto.phone ? createPersonDto.phone.trim() : null,
+      cellphone: createPersonDto.cellphone
+        ? createPersonDto.cellphone.trim()
+        : null
     }
   }
 
   newUpdatePersonData(updatePersonDto: UpdatePersonDto): IUpdatePersonData {
-    const updatePersonData = this.newPerson(
-      updatePersonDto.personId,
-      updatePersonDto.name,
-      updatePersonDto.surname,
-      updatePersonDto.personType,
+    const errorMessage = this.validatesService.validatePerson(
       updatePersonDto.cpf,
       updatePersonDto.cnpj,
-      updatePersonDto.birthDate,
-      updatePersonDto.address,
-      updatePersonDto.number,
-      updatePersonDto.city,
-      updatePersonDto.state,
-      updatePersonDto.zipCode,
-      updatePersonDto.complement,
-      updatePersonDto.neighborhood,
       updatePersonDto.email,
-      updatePersonDto.phone,
-      updatePersonDto.cellphone
+      updatePersonDto.birthDate,
+      updatePersonDto.zipCode
     )
+    if (errorMessage.length > 1) {
+      throw new BadRequestException(errorMessage)
+    }
+    return {
+      personId: updatePersonDto.personId,
+      name: updatePersonDto.name,
+      surname: updatePersonDto.surname,
+      personType: updatePersonDto.personType,
+      cpf: updatePersonDto.cpf,
+      cnpj: updatePersonDto.cnpj,
+      birthDate: new Date(updatePersonDto.birthDate),
+      address: updatePersonDto.address,
+      number: updatePersonDto.number,
+      city: updatePersonDto.city,
+      state: updatePersonDto.state,
+      zipCode: updatePersonDto.zipCode,
+      complement: updatePersonDto.complement,
+      neighborhood: updatePersonDto.neighborhood,
+      email: updatePersonDto.email,
+      phone: updatePersonDto.phone,
+      cellphone: updatePersonDto.cellphone,
+      updatedAt: new Date()
+    }
+  }
 
-    return updatePersonData as IUpdatePersonData
+  changeCpf(cpf: string | null) {
+    if (cpf) return '00000000000'
+    return null
   }
 }
