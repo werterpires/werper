@@ -5,7 +5,7 @@ import {
   InternalServerErrorException,
   NotFoundException
 } from '@nestjs/common'
-import { ICreatePersonData, IUpdatePersonData, Person } from '../types'
+import { ICreatePersonData, IUpdatePersonData, IPerson } from '../types'
 import { ValidatesService } from 'src/shared/utils/validates.service'
 import { CreatePersonDto } from '../dto/create-person.dto'
 import { UpdatePersonDto } from '../dto/update-person.dto'
@@ -16,7 +16,7 @@ import { Knex } from 'knex'
 import { InjectKnex, KnexModule, KnexModuleOptions } from 'nestjs-knex'
 import { mysqlConfig } from 'src/app.module'
 
-const person1: Person = {
+const person1: IPerson = {
   personId: 1,
   name: 'João',
   surname: 'Silva',
@@ -145,7 +145,7 @@ describe('PeopleRepository', () => {
     it('should return a Person', async () => {
       //Arrange
       const createPersonData: ICreatePersonData = createPersonData1
-      const expected: Person = person1
+      const expected: IPerson = person1
 
       //Act
       const result = await peopleRepository.createPerson(createPersonData)
@@ -183,7 +183,7 @@ describe('PeopleRepository', () => {
       const result = await peopleRepository.findAllPeople()
       //Assert
       expect(result).toBeDefined()
-      expect(result).toBeInstanceOf(Array<Person>)
+      expect(result).toBeInstanceOf(Array<IPerson>)
       expect(result).toHaveLength(2)
       expect(result).toEqual(expected)
     })
@@ -197,7 +197,7 @@ describe('PeopleRepository', () => {
       const result = await peopleRepository.findAllPeople()
       //Assert
       expect(result).toBeDefined()
-      expect(result).toBeInstanceOf(Array<Person>)
+      expect(result).toBeInstanceOf(Array<IPerson>)
       expect(result).toHaveLength(0)
     })
   })

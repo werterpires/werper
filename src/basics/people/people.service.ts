@@ -4,7 +4,7 @@ import { UpdatePersonDto } from './dto/update-person.dto'
 import { PeopleUtils } from './people.utils'
 import { ErrorsService } from 'src/shared/utils/errors.service'
 import { PeopleRepository } from './people.repository'
-import { Person } from './types'
+import { IPerson } from './types'
 import { ValidatesService } from 'src/shared/utils/validates.service'
 
 @Injectable()
@@ -14,7 +14,7 @@ export class PeopleService {
     private readonly errorsService: ErrorsService,
     private readonly peopleRepository: PeopleRepository
   ) {}
-  async createPerson(createPersonDto: CreatePersonDto): Promise<Person> {
+  async createPerson(createPersonDto: CreatePersonDto): Promise<IPerson> {
     try {
       const newPersonData =
         this.peopleUtils.newCreatePersonData(createPersonDto)
@@ -61,7 +61,7 @@ export class PeopleService {
     }
   }
 
-  async updatePersonById(updatePersonDto: UpdatePersonDto): Promise<Person> {
+  async updatePersonById(updatePersonDto: UpdatePersonDto): Promise<IPerson> {
     try {
       const updatePersonData =
         this.peopleUtils.newUpdatePersonData(updatePersonDto)

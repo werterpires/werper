@@ -13,10 +13,13 @@ import {
 import { PeopleService } from './people.service'
 import { CreatePersonDto } from './dto/create-person.dto'
 import { UpdatePersonDto } from './dto/update-person.dto'
-import { Person } from './types'
+import { IPerson } from './types'
 import { ErrorsService } from 'src/shared/utils/errors.service'
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { Person } from './swagger/responses'
 
 @Controller('people')
+@ApiTags('People')
 export class PeopleController {
   constructor(
     private readonly peopleService: PeopleService,
@@ -24,11 +27,18 @@ export class PeopleController {
   ) {}
 
   @Post()
+  @ApiOperation({ summary: 'create a new person.' })
+  @ApiResponse({
+    status: 201,
+    description: 'The record has been successfully created.',
+    type: Person
+  })
   async createPerson(
     @Body() createPersonDto: CreatePersonDto
-  ): Promise<Person> {
+  ): Promise<IPerson> {
     try {
-      const person = await this.peopleService.createPerson(createPersonDto)
+      const person: IPerson =
+        await this.peopleService.createPerson(createPersonDto)
       return person
     } catch (error) {
       throw this.errorsService.handleErrors(
@@ -40,7 +50,13 @@ export class PeopleController {
   }
 
   @Get()
-  async findAllPeople(): Promise<Person[]> {
+  @ApiOperation({ summary: 'find all people' })
+  @ApiResponse({
+    status: 200,
+    description: 'The values have been successfully returned.',
+    type: [Person]
+  })
+  async findAllPeople(): Promise<IPerson[]> {
     try {
       const people = await this.peopleService.findAllPeople()
       return people
@@ -54,7 +70,13 @@ export class PeopleController {
   }
 
   @Get(':id')
-  async findOnePersonById(@Param('id') id: string): Promise<Person> {
+  @ApiOperation({ summary: 'find one person by id' })
+  @ApiResponse({
+    status: 200,
+    description: 'The values have been successfully returned.',
+    type: Person
+  })
+  async findOnePersonById(@Param('id') id: string): Promise<IPerson> {
     try {
       const person = await this.peopleService.findPersonById(+id)
       return person
@@ -68,9 +90,15 @@ export class PeopleController {
   }
 
   @Put()
+  @ApiOperation({ summary: 'update a person by id' })
+  @ApiResponse({
+    status: 200,
+    description: 'The record has been successfully updated.',
+    type: Person
+  })
   async updatePersonById(
     @Body() updatePersonDto: UpdatePersonDto
-  ): Promise<Person> {
+  ): Promise<IPerson> {
     try {
       const person = await this.peopleService.updatePersonById(updatePersonDto)
       return person
@@ -84,6 +112,11 @@ export class PeopleController {
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'delete a person by id' })
+  @ApiResponse({
+    status: 204,
+    description: 'The record has been successfully deleted.'
+  })
   @HttpCode(HttpStatus.NO_CONTENT)
   async deletePersonById(@Param('id') id: string) {
     try {

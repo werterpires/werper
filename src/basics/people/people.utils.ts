@@ -5,15 +5,15 @@ import {
 } from '@nestjs/common'
 import { CreatePersonDto } from './dto/create-person.dto'
 import { UpdatePersonDto } from './dto/update-person.dto'
-import { ICreatePersonData, IUpdatePersonData, Person } from './types'
+import { ICreatePersonData, IUpdatePersonData, IPerson } from './types'
 import { ValidatesService } from 'src/shared/utils/validates.service'
 
 @Injectable()
 export class PeopleUtils {
   constructor(private readonly validatesService: ValidatesService) {}
 
-  createPeopleArrayFromDB(consultResult: any[]): Person[] {
-    const people: Person[] = consultResult.map((person) => {
+  createPeopleArrayFromDB(consultResult: any[]): IPerson[] {
+    const people: IPerson[] = consultResult.map((person) => {
       return this.newPerson(
         person.person_id,
         person.name,
@@ -48,7 +48,7 @@ export class PeopleUtils {
     return people
   }
 
-  createPersonFromDB(consultResult: any): Person {
+  createPersonFromDB(consultResult: any): IPerson {
     const person = this.newPerson(
       consultResult.person_id,
       consultResult.name,
@@ -87,7 +87,7 @@ export class PeopleUtils {
     personType: 'f' | 'j',
     cpf: string | null,
     cnpj: string | null,
-    birthDate: Date | null,
+    birthDate: string | null,
     address: string | null,
     number: string | null,
     city: string | null,
@@ -98,7 +98,7 @@ export class PeopleUtils {
     email: string | null,
     phone: string | null,
     cellphone: string | null
-  ): Person {
+  ): IPerson {
     return {
       personId,
       name,

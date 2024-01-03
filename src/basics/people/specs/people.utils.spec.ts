@@ -4,7 +4,7 @@ import {
   BadRequestException,
   InternalServerErrorException
 } from '@nestjs/common'
-import { ICreatePersonData, IUpdatePersonData, Person } from '../types'
+import { ICreatePersonData, IUpdatePersonData, IPerson } from '../types'
 import { ValidatesService } from 'src/shared/utils/validates.service'
 import { CreatePersonDto } from '../dto/create-person.dto'
 import { UpdatePersonDto } from '../dto/update-person.dto'
@@ -124,7 +124,7 @@ describe('PeopleUtils', () => {
       //Arrange
       const consultResult = [personFromDB1, personFromDB2]
 
-      const expected: Person[] = [
+      const expected: IPerson[] = [
         {
           personId: 1,
           name: 'João',
@@ -191,7 +191,7 @@ describe('PeopleUtils', () => {
     it('should create a person from database result', () => {
       const consultResult = personFromDB1
 
-      const expected: Person = {
+      const expected: IPerson = {
         personId: 1,
         name: 'João',
         surname: 'Silva',
@@ -229,7 +229,7 @@ describe('PeopleUtils', () => {
 
   describe('newPerson', () => {
     it('should return a new Person', () => {
-      const expected: Person = {
+      const expected: IPerson = {
         personId: 1,
         name: 'João',
         surname: 'Silva',
@@ -275,7 +275,7 @@ describe('PeopleUtils', () => {
     })
     it('should return a person with email as undefinde', () => {
       //Arrange
-      const expected: Person = {
+      const expected: IPerson = {
         personId: 1,
         name: 'João',
         surname: 'Silva',

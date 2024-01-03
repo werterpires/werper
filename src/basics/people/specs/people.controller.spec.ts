@@ -1,13 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { PeopleController } from '../people.controller'
 import { PeopleService } from '../people.service'
-import { Person } from '../types'
+import { IPerson } from '../types'
 import { ErrorsService } from 'src/shared/utils/errors.service'
 import { InternalServerErrorException } from '@nestjs/common'
 import { CreatePersonDto } from '../dto/create-person.dto'
 import { UpdatePersonDto } from '../dto/update-person.dto'
 
-const person1: Person = {
+const person1: IPerson = {
   personId: 1,
   name: 'João',
   surname: 'Silva',
@@ -26,7 +26,7 @@ const person1: Person = {
   phone: '555-1234',
   cellphone: '555-5678'
 }
-const person2: Person = {
+const person2: IPerson = {
   personId: 2,
   name: 'Maria',
   surname: 'Santos',

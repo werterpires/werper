@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectKnex, Knex } from 'nestjs-knex'
-import { ICreatePersonData, IUpdatePersonData, Person } from './types'
+import { ICreatePersonData, IUpdatePersonData, IPerson } from './types'
 import { PeopleUtils } from './people.utils'
 import { ErrorsService } from 'src/shared/utils/errors.service'
 
@@ -12,7 +12,7 @@ export class PeopleRepository {
     private errorsService: ErrorsService
   ) {}
 
-  async createPerson(createPersonData: ICreatePersonData): Promise<Person> {
+  async createPerson(createPersonData: ICreatePersonData): Promise<IPerson> {
     try {
       const {
         name,
@@ -71,7 +71,7 @@ export class PeopleRepository {
         throw new NotFoundException('#Nenhuma pessoa encontrada')
       }
       //cria uma array de Person a partir da consulta no db
-      const allPeople: Person[] =
+      const allPeople: IPerson[] =
         this.peopleUtils.createPeopleArrayFromDB(peopleConsult)
       return allPeople
     } catch (error) {
@@ -83,7 +83,7 @@ export class PeopleRepository {
     }
   }
 
-  async findPersonById(id: number): Promise<Person> {
+  async findPersonById(id: number): Promise<IPerson> {
     try {
       const peopleConsult = await this.knex('people')
         .first('*')
@@ -94,7 +94,7 @@ export class PeopleRepository {
       }
 
       //cria uma pessoa a partir da consulta no db
-      const person: Person = this.peopleUtils.createPersonFromDB(peopleConsult)
+      const person: IPerson = this.peopleUtils.createPersonFromDB(peopleConsult)
 
       return person
     } catch (error) {
@@ -106,7 +106,9 @@ export class PeopleRepository {
     }
   }
 
-  async updatePersonById(updatePersonData: IUpdatePersonData): Promise<Person> {
+  async updatePersonById(
+    updatePersonData: IUpdatePersonData
+  ): Promise<IPerson> {
     try {
       const {
         personId,
