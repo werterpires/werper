@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common'
+import { BadRequestException, Injectable } from '@nestjs/common'
 import { CreatePersonDto } from './dto/create-person.dto'
 import { UpdatePersonDto } from './dto/update-person.dto'
 import { PeopleUtils } from './people.utils'
-import { ErrorsService } from 'src/shared/errors/errors.service'
+import { ErrorsService } from 'src/shared/utils/errors.service'
 import { PeopleRepository } from './people.repository'
 import { Person } from './types'
+import { ValidatesService } from 'src/shared/utils/validates.service'
 
 @Injectable()
 export class PeopleService {
@@ -17,7 +18,9 @@ export class PeopleService {
     try {
       const newPersonData =
         this.peopleUtils.newCreatePersonData(createPersonDto)
+
       const newPerson = await this.peopleRepository.createPerson(newPersonData)
+      newPerson.cpf = this.peopleUtils.changeCpf(newPerson.cpf)
       return newPerson
     } catch (error) {
       throw this.errorsService.handleErrors(
@@ -28,9 +31,12 @@ export class PeopleService {
     }
   }
 
-  findAllPeople() {
+  async findAllPeople() {
     try {
-      const allPeople = this.peopleRepository.findAllPeople()
+      const allPeople = await this.peopleRepository.findAllPeople()
+      allPeople.forEach((person) => {
+        person.cpf = this.peopleUtils.changeCpf(person.cpf)
+      })
       return allPeople
     } catch (error) {
       throw this.errorsService.handleErrors(
@@ -41,9 +47,10 @@ export class PeopleService {
     }
   }
 
-  findPersonById(id: number) {
+  async findPersonById(id: number) {
     try {
-      const person = this.peopleRepository.findPersonById(id)
+      const person = await this.peopleRepository.findPersonById(id)
+      person.cpf = this.peopleUtils.changeCpf(person.cpf)
       return person
     } catch (error) {
       throw this.errorsService.handleErrors(
@@ -54,15 +61,13 @@ export class PeopleService {
     }
   }
 
-  async updatePersonById(
-    id: number,
-    updatePersonDto: UpdatePersonDto
-  ): Promise<Person> {
+  async updatePersonById(updatePersonDto: UpdatePersonDto): Promise<Person> {
     try {
       const updatePersonData =
         this.peopleUtils.newUpdatePersonData(updatePersonDto)
       const person =
         await this.peopleRepository.updatePersonById(updatePersonData)
+      person.cpf = this.peopleUtils.changeCpf(person.cpf)
       return person
     } catch (error) {
       throw this.errorsService.handleErrors(
@@ -73,14 +78,14 @@ export class PeopleService {
     }
   }
 
-  async remove(id: number): Promise<void> {
+  async deletePerson(id: number): Promise<void> {
     try {
-      await this.peopleRepository.deletePerson(id)
+      await this.peopleRepository.deletePersonById(id)
     } catch (error) {
       throw this.errorsService.handleErrors(
         error,
         '#Não foi possível atualizar a pessoa.',
-        'service/updatePersonById'
+        'service/deletePerson'
       )
     }
   }
