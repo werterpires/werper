@@ -271,7 +271,7 @@ describe('PeopleService', () => {
 
       const personId = 1
       //Act
-      const result = await peopleService.deletePerson(personId)
+      const result = await peopleService.deletePersonById(personId)
       //Assert
       expect(result).toBeUndefined()
       expect(mockPeopleRepository.deletePersonById).toHaveBeenCalledWith(

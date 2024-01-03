@@ -78,7 +78,7 @@ export class PeopleService {
     }
   }
 
-  async deletePerson(id: number): Promise<void> {
+  async deletePersonById(id: number): Promise<void> {
     try {
       await this.peopleRepository.deletePersonById(id)
     } catch (error) {
