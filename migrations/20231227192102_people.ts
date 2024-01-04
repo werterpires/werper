@@ -17,8 +17,8 @@ export async function up(knex: Knex): Promise<void> {
     table.string('complement')
     table.string('neighborhood')
     table.string('email', 100).unique()
-    table.string('phone', 11)
-    table.string('cellphone', 11)
+    table.string('phone', 16)
+    table.string('cellphone', 16)
     table.timestamps(true, true)
   })
 }

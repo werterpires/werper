@@ -6,7 +6,8 @@ import {
   IsOptional,
   IsString,
   Length,
-  MaxLength
+  MaxLength,
+  maxLength
 } from 'class-validator'
 
 export class CreatePersonDto {
@@ -87,11 +88,13 @@ export class CreatePersonDto {
 
   @IsOptional()
   @IsString()
+  // @MaxLength(16)
   @ApiProperty({ required: false })
   phone?: string | null
 
   @IsOptional()
   @IsString()
+  // @MaxLength(16)
   @ApiProperty({
     required: false
   })
