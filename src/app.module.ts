@@ -4,6 +4,7 @@ import { AppService } from './app.service'
 import { KnexModule, KnexModuleOptions } from 'nestjs-knex'
 import { PeopleModule } from './basics/people/people.module'
 import { UtilsModule } from './shared/utils/utils.module'
+import { UsersModule } from './basics/users/users.module';
 import * as dotenv from 'dotenv'
 dotenv.config()
 
@@ -43,7 +44,7 @@ export const mysqlConfig: KnexModuleOptions = {
   }
 }
 @Module({
-  imports: [KnexModule.forRoot(mysqlConfig), PeopleModule, UtilsModule],
+  imports: [KnexModule.forRoot(mysqlConfig), PeopleModule, UtilsModule, UsersModule],
   controllers: [AppController],
   providers: [AppService]
 })
