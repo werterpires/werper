@@ -8,7 +8,8 @@ import {
   Delete,
   HttpStatus,
   HttpCode,
-  UseGuards
+  UseGuards,
+  Request
 } from '@nestjs/common'
 import { AuthService } from './auth.service'
 import { LoginDto } from './dto/login.dto'
@@ -21,8 +22,8 @@ export class AuthController {
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @UseGuards(LocalAuthGuard)
-  login(@Body() loginData: LoginDto) {
-    // return this.authService.login(loginData)
+  login(@Request() req) {
+    return this.authService.login(req.user)
   }
 
   // @Get()
