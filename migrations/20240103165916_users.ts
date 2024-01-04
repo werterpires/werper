@@ -10,21 +10,9 @@ export async function up(knex: Knex): Promise<void> {
       .onDelete('RESTRICT')
       .onUpdate('CASCADE')
 
-    table.string('passwordHash').notNullable()
+    table.string('password_hash').notNullable()
 
-    //token to be used to recover password
-    table.string('recoverToken')
-
-    //indicates if the user is loggeed
-    table.boolean('logged').notNullable().defaultTo(false)
-
-    //indicates last try to login
-    table.timestamp('lastTryLogin')
-
-    //indicates how many times tryed to login in last 5 minutes
-    table.integer('loginAttempts').defaultTo(0)
-
-    table.foreign('')
+    table.boolean('active').notNullable().defaultTo(true)
 
     table.timestamps(true, true)
   })
