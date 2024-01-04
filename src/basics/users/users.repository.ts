@@ -24,7 +24,7 @@ export class UsersRepository {
     private errorsService: ErrorsService
   ) {}
 
-  async createUser(createUserData: ICreateUser): Promise<IUser> {
+  async createUser(createUserData: ICreateUser): Promise<number> {
     try {
       const {
         passwordHash,
@@ -41,29 +41,29 @@ export class UsersRepository {
       let userId: number | null
 
       await this.knex.transaction(async (trx) => {
-        try {
-          const personId = await trx('people').insert({
-            name,
-            surname,
-            person_type: personType,
-            cpf,
-            email,
-            phone,
-            cellphone
-          })
+        const personId = await trx('people').insert({
+          name,
+          surname,
+          person_type: personType,
+          cpf,
+          email,
+          phone,
+          cellphone
+        })
 
-          userId = await trx('users').insert({
+        userId = (
+          await trx('users').insert({
             person_id: personId[0],
             password_hash: passwordHash,
             active
           })
-        } catch (error) {
+        )[0]
+
+        console.log(userId)
+        if (!userId) {
           await trx.rollback()
-          throw this.errorsService.handleErrors(
-            error,
-            '#Não foi possível criar o usuário',
-            'repository/createUser'
-          )
+        } else {
+          await trx.commit()
         }
       })
 
@@ -73,9 +73,7 @@ export class UsersRepository {
         )
       }
 
-      const user = await this.findUserById(userId)
-
-      return user
+      return userId
     } catch (error) {
       throw this.errorsService.handleErrors(
         error,
@@ -91,10 +89,7 @@ export class UsersRepository {
         .leftJoin('people', 'users.people_id', 'people.person_id')
         .select('*')
 
-      //cria uma array de IUser a partir da consulta no db
-      const allUsers: IUser[] =
-        this.usersUtils.createUsersArrayFromDB(usersConsult)
-      return allUsers
+      return usersConsult
     } catch (error) {
       throw this.errorsService.handleErrors(
         error,
@@ -104,26 +99,44 @@ export class UsersRepository {
     }
   }
 
-  async findUserById(id: number): Promise<IUser> {
+  async findUserById(id: number): Promise<any> {
     try {
       const usersConsult = await this.knex('users')
-        .leftJoin('people', 'users.people_id', 'people.person_id')
+        .leftJoin('people', 'users.person_id', 'people.person_id')
         .first('*')
-        .where('person_id', id)
+        .where('user_id', id)
 
       if (!usersConsult) {
         throw new NotFoundException('#Usuário não encontrado.')
       }
 
-      //cria uma pessoa a partir da consulta no db
-      const user: IUser = this.usersUtils.createUserFromDB(usersConsult)
-
-      return user
+      return usersConsult
     } catch (error) {
       throw this.errorsService.handleErrors(
         error,
         '#Não foi possível encontrar o usuário',
         'repository/findUserById'
+      )
+    }
+  }
+
+  async findUserByEmail(email: string): Promise<any> {
+    try {
+      const usersConsult = await this.knex('users')
+        .join('people', 'users.person_id', 'people.person_id')
+        .first('*')
+        .where('person.email', email)
+
+      if (!usersConsult) {
+        throw new NotFoundException('#Usuário não encontrado.')
+      }
+
+      return usersConsult
+    } catch (error) {
+      throw this.errorsService.handleErrors(
+        error,
+        '#Não foi possível encontrar o usuário',
+        'repository/findUserByEmail'
       )
     }
   }

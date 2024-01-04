@@ -5,13 +5,17 @@ import {
   IsIn,
   IsOptional,
   IsString,
-  Length
+  Length,
+  Matches
 } from 'class-validator'
 
 export class CreateUserDto {
   @IsString()
   @Length(8, 16)
   @ApiProperty()
+  @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
+    message: 'senha muito fraca'
+  })
   password: string
 
   @IsBoolean()

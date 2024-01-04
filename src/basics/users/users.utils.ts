@@ -5,9 +5,11 @@ import {
 } from '@nestjs/common'
 
 import { ValidatesService } from 'src/shared/utils/validates.service'
-import { IUser } from './types'
+import { ICreateUser, IUser } from './types'
 import { PeopleUtils } from '../people/people.utils'
 import { IPerson } from '../people/types'
+import { CreateUserDto } from './dto/create-user.dto'
+import * as bcrypt from 'bcrypt'
 
 @Injectable()
 export class UsersUtils {
@@ -83,7 +85,7 @@ export class UsersUtils {
     const user = this.newUser(
       consultResult.user_id,
       consultResult.person_id,
-      consultResult.passwordHash,
+      consultResult.password_hash,
       consultResult.active,
       person
     )
@@ -91,7 +93,7 @@ export class UsersUtils {
     for (let prop of Object.entries(user)) {
       if (prop[1] === undefined) {
         throw new InternalServerErrorException(
-          `Propriedade ${prop[0]} não foi encontrada`
+          `#Propriedade ${prop[0]} não foi encontrada`
         )
       }
     }
@@ -115,46 +117,31 @@ export class UsersUtils {
     }
   }
 
-  // newCreateUserData(: CreatePersonDto): ICreatePersonData {
-  //   const errorMessage = this.validatesService.validatePerson(
-  //     createPersonDto.cpf,
-  //     createPersonDto.cnpj,
-  //     createPersonDto.email,
-  //     createPersonDto.birthDate,
-  //     createPersonDto.zipCode
-  //   )
+  async newCreateUserData(createUserDto: CreateUserDto): Promise<ICreateUser> {
+    const errorMessage = this.validatesService.validatePerson(
+      createUserDto.cpf,
+      undefined,
+      createUserDto.email,
+      undefined,
+      undefined
+    )
 
-  //   if (errorMessage.length > 1) {
-  //     throw new BadRequestException(errorMessage)
-  //   }
+    if (errorMessage.length > 1) {
+      throw new BadRequestException(errorMessage)
+    }
 
-  //   return {
-  //     name: createPersonDto.name.trim(),
-  //     surname: createPersonDto.surname ? createPersonDto.surname.trim() : null,
-  //     personType: createPersonDto.personType,
-  //     cpf: createPersonDto.cpf ? createPersonDto.cpf.trim() : null,
-  //     cnpj: createPersonDto.cnpj ? createPersonDto.cnpj.trim() : null,
-  //     birthDate: createPersonDto.birthDate
-  //       ? new Date(createPersonDto.birthDate.trim())
-  //       : null,
-  //     address: createPersonDto.address ? createPersonDto.address.trim() : null,
-  //     number: createPersonDto.number ? createPersonDto.number.trim() : null,
-  //     city: createPersonDto.city ? createPersonDto.city.trim() : null,
-  //     state: createPersonDto.state ? createPersonDto.state.trim() : null,
-  //     zipCode: createPersonDto.zipCode ? createPersonDto.zipCode.trim() : null,
-  //     complement: createPersonDto.complement
-  //       ? createPersonDto.complement.trim()
-  //       : null,
-  //     neighborhood: createPersonDto.neighborhood
-  //       ? createPersonDto.neighborhood.trim()
-  //       : null,
-  //     email: createPersonDto.email ? createPersonDto.email.trim() : null,
-  //     phone: createPersonDto.phone ? createPersonDto.phone.trim() : null,
-  //     cellphone: createPersonDto.cellphone
-  //       ? createPersonDto.cellphone.trim()
-  //       : null
-  //   }
-  // }
+    return {
+      active: true,
+      cellphone: createUserDto.cellphone,
+      email: createUserDto.email,
+      name: createUserDto.name,
+      passwordHash: await bcrypt.hash(createUserDto.password, 16),
+      personType: 'f',
+      surname: createUserDto.surname,
+      cpf: createUserDto.cpf,
+      phone: createUserDto.phone ? createUserDto.phone : null
+    }
+  }
 
   // newUpdatePersonData(updatePersonDto: UpdatePersonDto): IUpdatePersonData {
   //   const errorMessage = this.validatesService.validatePerson(
@@ -188,4 +175,11 @@ export class UsersUtils {
   //     updatedAt: new Date()
   //   }
   // }
+
+  changePasswordHash(passwordHash: string | null): string | null {
+    if (passwordHash) {
+      return 'pass'
+    }
+    return null
+  }
 }
