@@ -4,9 +4,11 @@ import { AppService } from './app.service'
 import { KnexModule, KnexModuleOptions } from 'nestjs-knex'
 import { PeopleModule } from './basics/people/people.module'
 import { UtilsModule } from './shared/utils/utils.module'
-import { UsersModule } from './basics/users/users.module';
-import { AuthModule } from './shared/auth/auth.module';
+import { UsersModule } from './basics/users/users.module'
+import { AuthModule } from './shared/auth/auth.module'
 import * as dotenv from 'dotenv'
+import { JwtAuthGuard } from './shared/auth/guards/jwt-auth.guard'
+import { APP_GUARD } from '@nestjs/core'
 dotenv.config()
 
 export const mysqlConfig: KnexModuleOptions = {
@@ -45,8 +47,20 @@ export const mysqlConfig: KnexModuleOptions = {
   }
 }
 @Module({
-  imports: [KnexModule.forRoot(mysqlConfig), PeopleModule, UtilsModule, UsersModule, AuthModule],
+  imports: [
+    KnexModule.forRoot(mysqlConfig),
+    PeopleModule,
+    UtilsModule,
+    UsersModule,
+    AuthModule
+  ],
   controllers: [AppController],
-  providers: [AppService]
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard
+    }
+  ]
 })
 export class AppModule {}

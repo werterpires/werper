@@ -11,3 +11,11 @@ export interface IUserPayload {
 export interface UserToken {
   accessToken: string
 }
+
+export interface IUserFromJwt {
+  email: string
+  userId: number
+  name: string
+  surname: string
+  active: boolean
+}
