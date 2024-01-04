@@ -13,6 +13,10 @@ export class ErrorsService {
     // console.error(error)
     if (error.message.startsWith('#')) {
       return error
+    } else if (error.code === 'ER_DATA_TOO_LONG') {
+      return new BadRequestException(
+        `#Algum dado fornecido é maior que o esperado.`
+      )
     } else if (error.code === 'ER_TRUNCATED_WRONG_VALUE') {
       const problem = this.errorsUtils.getProblematicEntry(error.sqlMessage)
       return new BadRequestException(
@@ -22,6 +26,13 @@ export class ErrorsService {
       const problem = this.errorsUtils.getProblematicEntry(error.sqlMessage)
       return new BadRequestException(
         `#Já existe um registro com o seguinte dado: '${problem}' e ele deve ser único.`
+      )
+    } else if (
+      error.code == 'ERR_ASSERTION' ||
+      error.code == 'ER_BAD_FIELD_ERROR'
+    ) {
+      return new InternalServerErrorException(
+        `#Erro interno. Informe o time de suporte para correção.`
       )
     } else {
       console.error(`new error in  ${func}:`)
