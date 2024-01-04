@@ -59,7 +59,6 @@ export class UsersRepository {
           })
         )[0]
 
-        console.log(userId)
         if (!userId) {
           await trx.rollback()
         } else {
@@ -125,7 +124,7 @@ export class UsersRepository {
       const usersConsult = await this.knex('users')
         .join('people', 'users.person_id', 'people.person_id')
         .first('*')
-        .where('person.email', email)
+        .where('people.email', email)
 
       if (!usersConsult) {
         throw new NotFoundException('#Usuário não encontrado.')
