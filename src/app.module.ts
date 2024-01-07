@@ -10,7 +10,7 @@ import { AuthModule } from './shared/auth/auth.module'
 import * as dotenv from 'dotenv'
 import { JwtAuthGuard } from './shared/auth/guards/jwt-auth.guard'
 import { APP_GUARD } from '@nestjs/core'
-import { TermsTypesModule } from './params/terms-types/terms-types.module';
+
 dotenv.config()
 
 export const mysqlConfig: KnexModuleOptions = {
@@ -59,11 +59,11 @@ export const mysqlConfig: KnexModuleOptions = {
   ],
   controllers: [AppController],
   providers: [
-    AppService
-    // {
-    //   provide: APP_GUARD,
-    //   useClass: JwtAuthGuard
-    // }
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard
+    }
   ]
 })
 export class AppModule {}
