@@ -77,7 +77,7 @@ describe('TermsTypesService', () => {
   describe('createTermType', () => {
     it('should create a new term type', async () => {
       // Arrange
-      const createTermTypeDto: ICreateTermType = fillers.crateTermTypeDto
+      const createTermTypeDto: ICreateTermType = fillers.createTermTypeDto
       const expected = fillers.termType1
 
       //Act
@@ -99,7 +99,7 @@ describe('TermsTypesService', () => {
 
       //Assert
       expect(
-        termsTypesService.createTermType(fillers.crateTermTypeDto)
+        termsTypesService.createTermType(fillers.createTermTypeDto)
       ).rejects.toThrow(InternalServerErrorException)
     })
   })

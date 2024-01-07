@@ -5,6 +5,7 @@ import { KnexModule, KnexModuleOptions } from 'nestjs-knex'
 import { PeopleModule } from './basics/people/people.module'
 import { UtilsModule } from './shared/utils/utils.module'
 import { UsersModule } from './basics/users/users.module'
+import { TermsTypesModule } from './params/terms-types/terms-types.module'
 import { AuthModule } from './shared/auth/auth.module'
 import * as dotenv from 'dotenv'
 import { JwtAuthGuard } from './shared/auth/guards/jwt-auth.guard'
@@ -52,7 +53,8 @@ export const mysqlConfig: KnexModuleOptions = {
     PeopleModule,
     UtilsModule,
     UsersModule,
-    AuthModule
+    AuthModule,
+    TermsTypesModule
   ],
   controllers: [AppController],
   providers: [

@@ -1,34 +1,106 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { TermsTypesService } from './terms-types.service';
-import { CreateTermsTypeDto } from './dto/create-terms-type.dto';
-import { UpdateTermsTypeDto } from './dto/update-terms-type.dto';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Put
+} from '@nestjs/common'
+import { TermsTypesService } from './terms-types.service'
+import { CreateTermsTypeDto } from './dto/create-terms-type.dto'
+import { UpdateTermsTypeDto } from './dto/update-terms-type.dto'
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { TermType } from './swagger/responses'
+import { ErrorsService } from 'src/shared/utils/errors.service'
 
 @Controller('terms-types')
+@ApiTags('Terms Types')
 export class TermsTypesController {
-  constructor(private readonly termsTypesService: TermsTypesService) {}
+  constructor(
+    private readonly termsTypesService: TermsTypesService,
+    private readonly errorsService: ErrorsService
+  ) {}
 
   @Post()
-  create(@Body() createTermsTypeDto: CreateTermsTypeDto) {
-    return this.termsTypesService.create(createTermsTypeDto);
+  @ApiOperation({ summary: 'create a new terms type.' })
+  @ApiResponse({
+    status: 201,
+    description: 'The record has been successfully created.',
+    type: TermType
+  })
+  @ApiResponse({})
+  async createTermType(@Body() createTermsTypeDto: CreateTermsTypeDto) {
+    try {
+      const newTermType =
+        await this.termsTypesService.createTermType(createTermsTypeDto)
+
+      return newTermType
+    } catch (error) {
+      throw this.errorsService.handleErrors(
+        error,
+        'Falha ao criar tipo de termo',
+        'controller/createTermType'
+      )
+    }
   }
 
   @Get()
-  findAll() {
-    return this.termsTypesService.findAll();
+  async findAllTermsTypes() {
+    try {
+      const termTypes = await this.termsTypesService.findAllTermsTypes()
+      return termTypes
+    } catch (error) {
+      throw this.errorsService.handleErrors(
+        error,
+        'Falha ao buscar tipos de termo',
+        'controller/findAllTermsTypes'
+      )
+    }
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.termsTypesService.findOne(+id);
+  async findTermTypeById(@Param('id') id: string) {
+    try {
+      const termType = await this.termsTypesService.findTermTypeById(+id)
+
+      return termType
+    } catch (error) {
+      throw this.errorsService.handleErrors(
+        error,
+        'Falha ao buscar tipo de termo',
+        'controller/findTermTypeById'
+      )
+    }
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTermsTypeDto: UpdateTermsTypeDto) {
-    return this.termsTypesService.update(+id, updateTermsTypeDto);
+  @Put()
+  async updateTermTypeById(@Body() updateTermsTypeDto: UpdateTermsTypeDto) {
+    try {
+      const updatedTerm =
+        await this.termsTypesService.updateTermTypeById(updateTermsTypeDto)
+
+      return updatedTerm
+    } catch (error) {
+      throw this.errorsService.handleErrors(
+        error,
+        'Falha ao atualizar tipo de termo',
+        'controller/updateTermTypeById'
+      )
+    }
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.termsTypesService.remove(+id);
+  async deleteTermTypeById(@Param('id') id: string) {
+    try {
+      return await this.termsTypesService.deleteTermTypeById(+id)
+    } catch (error) {
+      throw this.errorsService.handleErrors(
+        error,
+        'Falha ao deletar tipo de termo',
+        'controller/deleteTermTypeById'
+      )
+    }
   }
 }

@@ -51,7 +51,7 @@ export const termType2: ITermType = {
 export const termsTypes: ITermType[] = [termType1, termType2]
 
 // ---------------- Dto ----------------
-export const crateTermTypeDto: CreateTermsTypeDto = {
+export const createTermTypeDto: CreateTermsTypeDto = {
   termTypeName: 'Term type 1',
   termTypeDescription: 'Term type 1 description'
 }
