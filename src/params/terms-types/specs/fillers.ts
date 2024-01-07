@@ -1,4 +1,5 @@
 import { CreateTermsTypeDto } from '../dto/create-terms-type.dto'
+import { UpdateTermsTypeDto } from '../dto/update-terms-type.dto'
 import { ICreateTermType, ITermType } from '../types'
 
 //------------ consultas banco de dados --------------
@@ -35,6 +36,12 @@ export const termType1: ITermType = {
   termTypeDescription: 'Term type 1 description'
 }
 
+export const termType1Updated: ITermType = {
+  termTypeId: 1,
+  termTypeName: 'Term type 10',
+  termTypeDescription: 'Term type 10 description'
+}
+
 export const termType2: ITermType = {
   termTypeId: 2,
   termTypeName: 'Term type 2',
@@ -47,6 +54,12 @@ export const termsTypes: ITermType[] = [termType1, termType2]
 export const crateTermTypeDto: CreateTermsTypeDto = {
   termTypeName: 'Term type 1',
   termTypeDescription: 'Term type 1 description'
+}
+
+export const updateTermTypeDto: UpdateTermsTypeDto = {
+  termTypeId: 1,
+  termTypeName: 'Term type 10',
+  termTypeDescription: 'Term type 10 description'
 }
 
 // ---------------- creationData ----------------

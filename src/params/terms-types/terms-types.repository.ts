@@ -4,15 +4,13 @@ import { ErrorsService } from 'src/shared/utils/errors.service'
 import { ICreateTermType, ITermType, IUpdateTermType } from './types'
 
 @Injectable()
-export class termsTypesRepository {
+export class TermsTypesRepository {
   constructor(
     @InjectKnex() private readonly knex: Knex,
     private errorsService: ErrorsService
   ) {}
 
-  async createTermType(
-    createTermTypeData: ICreateTermType
-  ): Promise<ITermType> {
+  async createTermType(createTermTypeData: ICreateTermType): Promise<number> {
     try {
       const { termTypeName, termTypeDescription } = createTermTypeData
 
@@ -21,9 +19,7 @@ export class termsTypesRepository {
         term_type_description: termTypeDescription
       })
 
-      const termType = await this.findTermTypeById(termTypeId)
-
-      return termType
+      return termTypeId
     } catch (error) {
       throw this.errorsService.handleErrors(
         error,
@@ -67,9 +63,7 @@ export class termsTypesRepository {
     }
   }
 
-  async updateTermTypeById(
-    updateTermTypeData: IUpdateTermType
-  ): Promise<ITermType> {
+  async updateTermTypeById(updateTermTypeData: IUpdateTermType): Promise<void> {
     try {
       const { termTypeId, termTypeDescription, termTypeName } =
         updateTermTypeData
@@ -82,8 +76,6 @@ export class termsTypesRepository {
       if (editsQuantity === 0) {
         throw new NotFoundException('#Tipo de termo não encontrado.')
       }
-      const termType = await this.findTermTypeById(termTypeId)
-      return termType
     } catch (error) {
       throw this.errorsService.handleErrors(
         error,
