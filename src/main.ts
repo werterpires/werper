@@ -10,7 +10,6 @@ async function bootstrap() {
     .setTitle('wERPer API')
     .setDescription('API for wERPer')
     .setVersion('1.0.0')
-    .addTag('finance')
     .build()
   const document = SwaggerModule.createDocument(app, config)
   SwaggerModule.setup('api', app, document)
