@@ -12,6 +12,46 @@ import { ValidatesService } from 'src/shared/utils/validates.service'
 export class PeopleUtils {
   constructor(private readonly validatesService: ValidatesService) {}
 
+  newPerson(
+    personId: number,
+    name: string,
+    surname: string | null,
+    personType: 'f' | 'j',
+    cpf: string | null,
+    cnpj: string | null,
+    birthDate: string | null,
+    address: string | null,
+    number: string | null,
+    city: string | null,
+    state: string | null,
+    zipCode: string | null,
+    complement: string | null,
+    neighborhood: string | null,
+    email: string | null,
+    phone: string | null,
+    cellphone: string | null
+  ): IPerson {
+    return {
+      personId,
+      name,
+      surname,
+      personType,
+      cpf,
+      cnpj,
+      birthDate,
+      address,
+      number,
+      city,
+      state,
+      zipCode,
+      complement,
+      neighborhood,
+      email,
+      phone,
+      cellphone
+    }
+  }
+
   createPeopleArrayFromDB(consultResult: any[]): IPerson[] {
     const people: IPerson[] = consultResult.map((person) => {
       return this.newPerson(
@@ -78,46 +118,6 @@ export class PeopleUtils {
     }
 
     return person
-  }
-
-  newPerson(
-    personId: number,
-    name: string,
-    surname: string | null,
-    personType: 'f' | 'j',
-    cpf: string | null,
-    cnpj: string | null,
-    birthDate: string | null,
-    address: string | null,
-    number: string | null,
-    city: string | null,
-    state: string | null,
-    zipCode: string | null,
-    complement: string | null,
-    neighborhood: string | null,
-    email: string | null,
-    phone: string | null,
-    cellphone: string | null
-  ): IPerson {
-    return {
-      personId,
-      name,
-      surname,
-      personType,
-      cpf,
-      cnpj,
-      birthDate,
-      address,
-      number,
-      city,
-      state,
-      zipCode,
-      complement,
-      neighborhood,
-      email,
-      phone,
-      cellphone
-    }
   }
 
   newCreatePersonData(createPersonDto: CreatePersonDto): ICreatePersonData {
