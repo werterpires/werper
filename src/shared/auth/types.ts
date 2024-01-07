@@ -1,3 +1,6 @@
+import { Request } from 'express'
+import { IUser } from 'src/basics/users/types'
+
 export interface IUserPayload {
   email: string
   sub: number
@@ -18,4 +21,8 @@ export interface IUserFromJwt {
   name: string
   surname: string
   active: boolean
+}
+
+export interface AuthRequest extends Request {
+  user: IUser
 }
