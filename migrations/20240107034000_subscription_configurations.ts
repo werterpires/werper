@@ -11,7 +11,7 @@ export async function up(knex: Knex): Promise<void> {
       .onUpdate('CASCADE')
     table.string('subscription_historic')
     table.integer('companies_number').unsigned().notNullable()
-    table.integer('agents_number').unsigned().notNullable()
+    table.integer('users_number').unsigned().notNullable()
     table.decimal('price', 10, 2).notNullable()
     table.timestamps(true, true)
   })

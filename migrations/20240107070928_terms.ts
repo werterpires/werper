@@ -15,7 +15,7 @@ export async function up(knex: Knex): Promise<void> {
       .references('roles.role_id')
       .onDelete('RESTRICT')
       .onUpdate('CASCADE')
-    table.string('term_text', 30000).notNullable().unique()
+    table.text('term_text').notNullable()
     table.string('term_description', 255)
     table.string('term_version').notNullable()
     table.timestamps(true, true)
