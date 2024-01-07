@@ -26,4 +26,7 @@ export async function up(knex: Knex): Promise<void> {
   })
 }
 
-export async function down(knex: Knex): Promise<void> {}
+export async function down(knex: Knex): Promise<void> {
+  console.log(1)
+  return knex.schema.dropTable('users_utilities')
+}
