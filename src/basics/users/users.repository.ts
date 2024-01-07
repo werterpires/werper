@@ -106,10 +106,27 @@ export class UsersRepository {
           users_number: usersNumber
         })
 
-        const companypersonId = await trx('people').insert(companyPerson)
+        const companypersonId = await trx('people').insert({
+          name: companyPerson.name,
+          surname: companyPerson.surname,
+          person_type: companyPerson.personType,
+          cpf: companyPerson.cpf,
+          cnpj: companyPerson.cnpj,
+          birth_date: companyPerson.birthDate,
+          address: companyPerson.address,
+          number: companyPerson.number,
+          city: companyPerson.city,
+          state: companyPerson.state,
+          zip_code: companyPerson.zipCode,
+          complement: companyPerson.complement,
+          neighborhood: companyPerson.neighborhood,
+          email: companyPerson.email,
+          phone: companyPerson.phone,
+          cellphone: companyPerson.cellphone
+        })
 
         await trx('companies').insert({
-          subscription_configuration_id: subscriptionConfigurationId[0],
+          subscription_id: subscriptionId,
           person_id: companypersonId,
           company_description: companyDescription
         })
