@@ -29,10 +29,11 @@ export class ErrorsService {
       )
     } else if (
       error.code == 'ERR_ASSERTION' ||
-      error.code == 'ER_BAD_FIELD_ERROR'
+      error.code == 'ER_BAD_FIELD_ERROR' ||
+      error.code == 'ER_NO_DEFAULT_FOR_FIELD'
     ) {
       return new InternalServerErrorException(
-        `#Erro interno. Informe o time de suporte para correção.`
+        `#Erro interno. Informe o código "${error.code}" para o time de suporte para correção.`
       )
     } else {
       console.error(`new error in  ${func}:`)

@@ -15,7 +15,7 @@ export async function up(knex: Knex): Promise<void> {
         'Usuário com poderes de gerenciar assinantes, assinaturas e instituições. Sem acesso aos dados das empresas'
     },
     {
-      role_name: 'signer',
+      role_name: 'subscriber',
       role_description:
         'Usuário com poderes para criar, ver e editar assinaturas e instituições. Pode intstituir gerentes e agentes.'
     },

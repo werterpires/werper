@@ -1,3 +1,4 @@
+import { ERoles } from 'src/shared/roles/types'
 import { IPerson } from '../people/types'
 
 export interface ICreateUser {
@@ -28,4 +29,11 @@ export interface IUpdateUserPassword {
 export interface IUpdateUserActivity {
   userId: number
   active: boolean
+}
+
+// ---------------------------------------------------------------
+export interface IRole {
+  roleId: number
+  role_name: string
+  role_description: string
 }
