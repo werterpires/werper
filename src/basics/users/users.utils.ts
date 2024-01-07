@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common'
 
 import { ValidatesService } from 'src/shared/utils/validates.service'
-import { ICreateUser, IUser } from './types'
+import { ICreateSignerUser, ICreateUser, IUser } from './types'
 import { PeopleUtils } from '../people/people.utils'
 import { IPerson } from '../people/types'
 import { CreateUserDto } from './dto/create-user.dto'
@@ -117,8 +117,10 @@ export class UsersUtils {
     }
   }
 
-  async newCreateUserData(createUserDto: CreateUserDto): Promise<ICreateUser> {
-    const errorMessage = this.validatesService.validatePerson(
+  async newCreateSignerUserData(
+    createUserDto: CreateUserDto
+  ): Promise<ICreateSignerUser> {
+    let errorMessage = this.validatesService.validatePerson(
       createUserDto.cpf,
       undefined,
       createUserDto.email,
@@ -126,9 +128,21 @@ export class UsersUtils {
       undefined
     )
 
+    errorMessage = this.validatesService.validatePerson(
+      createUserDto.companyPerson.cpf,
+      createUserDto.companyPerson.cnpj,
+      createUserDto.companyPerson.email,
+      createUserDto.companyPerson.birthDate,
+      createUserDto.companyPerson.zipCode
+    )
+
     if (errorMessage.length > 1) {
       throw new BadRequestException(errorMessage)
     }
+
+    const companyPerson = this.personsUtils.newCreatePersonData(
+      createUserDto.companyPerson
+    )
 
     return {
       active: true,
@@ -139,42 +153,21 @@ export class UsersUtils {
       personType: 'f',
       surname: createUserDto.surname,
       cpf: createUserDto.cpf,
-      phone: createUserDto.phone ? createUserDto.phone : null
+      phone: createUserDto.phone ? createUserDto.phone : null,
+      roles: [2],
+      occupationsPermissions: createUserDto.occupationsPermissions,
+      subscriptionTitle: 'Padrão',
+      subscriptionActive: true,
+      subscriptionHistoric: 'Inscrição inicial no werper',
+      companiesNumber: 1,
+      price: 250,
+      companyDescription: '',
+      companyPerson,
+      logged: false,
+      validate: new Date(new Date().getTime() + 60 * 24 * 60 * 60 * 1000),
+      usersNumber: 1
     }
   }
-
-  // newUpdatePersonData(updatePersonDto: UpdatePersonDto): IUpdatePersonData {
-  //   const errorMessage = this.validatesService.validatePerson(
-  //     updatePersonDto.cpf,
-  //     updatePersonDto.cnpj,
-  //     updatePersonDto.email,
-  //     updatePersonDto.birthDate,
-  //     updatePersonDto.zipCode
-  //   )
-  //   if (errorMessage.length > 1) {
-  //     throw new BadRequestException(errorMessage)
-  //   }
-  //   return {
-  //     personId: updatePersonDto.personId,
-  //     name: updatePersonDto.name,
-  //     surname: updatePersonDto.surname,
-  //     personType: updatePersonDto.personType,
-  //     cpf: updatePersonDto.cpf,
-  //     cnpj: updatePersonDto.cnpj,
-  //     birthDate: new Date(updatePersonDto.birthDate),
-  //     address: updatePersonDto.address,
-  //     number: updatePersonDto.number,
-  //     city: updatePersonDto.city,
-  //     state: updatePersonDto.state,
-  //     zipCode: updatePersonDto.zipCode,
-  //     complement: updatePersonDto.complement,
-  //     neighborhood: updatePersonDto.neighborhood,
-  //     email: updatePersonDto.email,
-  //     phone: updatePersonDto.phone,
-  //     cellphone: updatePersonDto.cellphone,
-  //     updatedAt: new Date()
-  //   }
-  // }
 
   changePasswordHash(passwordHash: string | null): string | null {
     if (passwordHash) {

@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { CreateUserDto } from './dto/create-user.dto'
-import { ICreateUser, IUser } from './types'
+import { ICreateSignerUser, ICreateUser, IUser } from './types'
 import { UsersUtils } from './users.utils'
 import { UsersRepository } from './users.repository'
 import { PeopleUtils } from '../people/people.utils'
@@ -17,11 +17,11 @@ export class UsersService {
     private readonly errorsService: ErrorsService
   ) {}
 
-  async createUser(createUserDto: CreateUserDto): Promise<IUser> {
-    const createUserData: ICreateUser =
-      await this.usersUtils.newCreateUserData(createUserDto)
+  async createSignerUser(createUserDto: CreateUserDto): Promise<IUser> {
+    const createUserData: ICreateSignerUser =
+      await this.usersUtils.newCreateSignerUserData(createUserDto)
 
-    const userId = await this.usersRepository.createUser(createUserData)
+    const userId = await this.usersRepository.createSignerUser(createUserData)
 
     const newUserData = await this.usersRepository.findUserById(userId)
 
@@ -34,14 +34,11 @@ export class UsersService {
     return newUser
   }
 
-  findAll() {
-    return `This action returns all users`
-  }
-
   async findUserByEmail(email: string): Promise<IUser> {
     try {
-      if (!this.validatesService.validateEmail(email)) {
-        throw new BadRequestException('#Email inválido')
+      const errorMessage = this.validatesService.validateEmail(email, '#')
+      if (errorMessage.length > 1) {
+        throw new BadRequestException(errorMessage)
       }
 
       const userData = await this.usersRepository.findUserByEmail(email)
@@ -57,16 +54,4 @@ export class UsersService {
       )
     }
   }
-
-  // findOne(id: number) {
-  //   return `This action returns a #${id} user`;
-  // }
-
-  // update(id: number, updateUserDto: UpdateUserDto) {
-  //   return `This action updates a #${id} user`;
-  // }
-
-  // remove(id: number) {
-  //   return `This action removes a #${id} user`;
-  // }
 }

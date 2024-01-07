@@ -9,6 +9,7 @@ import { InjectKnex, Knex } from 'nestjs-knex'
 import { UsersUtils } from './users.utils'
 import { ErrorsService } from 'src/shared/utils/errors.service'
 import {
+  ICreateSignerUser,
   ICreateUser,
   IUpdateUserActivity,
   IUpdateUserPassword,
@@ -24,7 +25,7 @@ export class UsersRepository {
     private errorsService: ErrorsService
   ) {}
 
-  async createUser(createUserData: ICreateUser): Promise<number> {
+  async createSignerUser(createUserData: ICreateSignerUser): Promise<number> {
     try {
       const {
         passwordHash,
@@ -35,7 +36,19 @@ export class UsersRepository {
         personType,
         email,
         phone,
-        cellphone
+        cellphone,
+        occupationsPermissions,
+        roles,
+        subscriptionTitle,
+        subscriptionActive,
+        subscriptionHistoric,
+        companiesNumber,
+        price,
+        companyPerson,
+        companyDescription,
+        logged,
+        validate,
+        usersNumber
       } = createUserData
 
       let userId: number | null
@@ -58,6 +71,48 @@ export class UsersRepository {
             active
           })
         )[0]
+
+        const userUtilityId = await trx('users_utilities').insert({
+          user_id: userId,
+          logged
+        })
+
+        const userRoleId = await trx('users_roles').insert({
+          user_id: userId,
+          role_id: roles[0]
+        })
+
+        for (let occupationPermission of occupationsPermissions) {
+          await trx('users_occupations_permissions').insert({
+            user_id: userId,
+            occupation_id: occupationPermission.occupationId,
+            permission_id: occupationPermission.permissionId
+          })
+        }
+
+        const subscriptionId = await trx('subscriptions').insert({
+          subscription_title: subscriptionTitle,
+          subscription_active: subscriptionActive,
+          validate
+        })
+
+        const subscriptionConfigurationId = await trx(
+          'subscription_configurations'
+        ).insert({
+          subscription_id: subscriptionId[0],
+          companies_number: companiesNumber,
+          price,
+          subscription_historic: subscriptionHistoric,
+          users_number: usersNumber
+        })
+
+        const companypersonId = await trx('people').insert(companyPerson)
+
+        await trx('companies').insert({
+          subscription_configuration_id: subscriptionConfigurationId[0],
+          person_id: companypersonId,
+          company_description: companyDescription
+        })
 
         if (!userId) {
           await trx.rollback()

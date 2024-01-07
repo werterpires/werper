@@ -11,15 +11,17 @@ export class ValidatesService {
   constructor(private readonly errorsUtils: ErrorsUtils) {}
 
   cpfRegex = /^\d{11}$/
-  validateCpf(cpf: string) {
+  validateCpf(cpf: string, msg: string): string {
     cpf = cpf.replace(/[^\d]/g, '') // Remove caracteres não numéricos
 
     // Verifica se a senha é válido
     if (!this.cpfRegex.test(cpf)) {
-      return false
+      msg += '/cpf inválido/ '
+      return msg
     }
     if (/^(\d)\1+$/.test(cpf)) {
-      return false
+      msg += '/cpf inválido/ '
+      return msg
     }
 
     // Calcula o primeiro dígito verificador
@@ -47,24 +49,27 @@ export class ValidatesService {
       digit1 !== parseInt(cpf.charAt(9)) ||
       digit2 !== parseInt(cpf.charAt(10))
     ) {
-      return false
+      msg += '/cpf inválido/ '
+      return msg
     }
 
-    return true
+    return msg
   }
 
-  validateCnpj(cnpj: string): boolean {
+  validateCnpj(cnpj: string, msg: string): string {
     // Remove caracteres não numéricos
     cnpj = cnpj.replace(/[^\d]/g, '')
 
     // Verificar se o CNPJ possui 14 dígitos
     if (cnpj.length !== 14) {
-      return false
+      msg += '/cnpj inválido/ '
+      return msg
     }
 
     // Verificar se todos os dígitos são iguais (situação inválida para CNPJ)
     if (/^(\d)\1+$/.test(cnpj)) {
-      return false
+      msg += '/cnpj inválido/ '
+      return msg
     }
 
     // Calcular os dígitos verificadores
@@ -85,7 +90,8 @@ export class ValidatesService {
 
     // Verificar o primeiro dígito verificador
     if (resultado !== parseInt(digitos.charAt(0), 10)) {
-      return false
+      msg += '/cnpj inválido/ '
+      return msg
     }
 
     tamanho += 1
@@ -103,13 +109,51 @@ export class ValidatesService {
     resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11)
 
     // Verificar o segundo dígito verificador
-    return resultado === parseInt(digitos.charAt(1), 10)
+    if (resultado !== parseInt(digitos.charAt(1), 10)) {
+      msg += '/cnpj inválido/ '
+      return msg
+    }
+    return msg
   }
 
-  validateEmail(email: string): boolean {
+  validateEmail(email: string, msg: string): string {
     const emailRegex =
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-    return emailRegex.test(email)
+    const isEmail = emailRegex.test(email)
+
+    if (!isEmail) {
+      msg += '/email inválido/ '
+    }
+    return msg
+  }
+
+  validateDate(date: string, msg: string): string {
+    const dateRegex = /^([0-9]{1,2})\/([0-9]{1,2})\/([0-9]{4})$/
+
+    if (!(isNaN(Date.parse(date)) && dateRegex.test(date))) {
+      msg += '/data inválida/ '
+      return msg
+    }
+
+    return msg
+  }
+
+  validateZipCode(zipCode: string, msg: string): string {
+    const zipCodeRegex = /^[0-9]{8}$/
+    if (!zipCodeRegex.test(zipCode)) {
+      msg += '/CEP inválido/ '
+      return msg
+    }
+
+    return msg
+  }
+
+  validateNotEmptyArray(array: any[], msg: string): string {
+    if (!array || array.length === 0) {
+      msg += '/Há uma lista de elementos necessária, mas está vazia./ '
+      return msg
+    }
+    return msg
   }
 
   validatePerson(
@@ -121,44 +165,22 @@ export class ValidatesService {
   ): string {
     let errorMessage = '#'
     if (cpf) {
-      if (!this.validateCpf(cpf)) {
-        errorMessage += '/CPF inválido/ '
-      }
+      errorMessage = this.validateCpf(cpf, errorMessage)
     }
     if (cnpj) {
-      if (!this.validateCnpj(cnpj)) {
-        errorMessage += '/CNPJ inválido/ '
-      }
+      errorMessage = this.validateCnpj(cnpj, errorMessage)
     }
     if (email) {
-      if (!this.validateEmail(email)) {
-        errorMessage += '/Email inválido/ '
-      }
+      errorMessage = this.validateEmail(email, errorMessage)
     }
     if (date) {
-      if (!this.validateDate(date)) {
-        errorMessage += '/Data inválida/ '
-      }
     }
 
     if (zipeCode) {
-      if (!this.validateZipCode(zipeCode)) {
-        errorMessage += '/CEP inválido/ '
-      }
+      errorMessage = this.validateZipCode(zipeCode, errorMessage)
     }
 
     errorMessage.trim()
     return errorMessage
-  }
-
-  validateDate(date: string): boolean {
-    const dateRegex = /^([0-9]{1,2})\/([0-9]{1,2})\/([0-9]{4})$/
-
-    return !isNaN(Date.parse(date)) && dateRegex.test(date)
-  }
-
-  validateZipCode(zipCode: string): boolean {
-    const zipCodeRegex = /^[0-9]{8}$/
-    return zipCodeRegex.test(zipCode)
   }
 }

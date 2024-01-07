@@ -1,13 +1,19 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import {
+  IsArray,
   IsBoolean,
   IsEmail,
   IsIn,
+  IsNumber,
+  IsObject,
   IsOptional,
   IsString,
   Length,
-  Matches
+  Matches,
+  isArray
 } from 'class-validator'
+import { IOccupationPermission } from '../types'
+import { CreatePersonDto } from 'src/basics/people/dto/create-person.dto'
 
 export class CreateUserDto {
   @IsString()
@@ -52,4 +58,13 @@ export class CreateUserDto {
   @IsString()
   @ApiProperty()
   cellphone: string
+
+  @IsArray()
+  @IsArray({ each: true })
+  @ApiProperty()
+  occupationsPermissions: IOccupationPermission[]
+
+  @IsObject()
+  @ApiProperty()
+  companyPerson: CreatePersonDto
 }
