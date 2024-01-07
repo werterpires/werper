@@ -18,6 +18,7 @@ import { ErrorsService } from 'src/shared/utils/errors.service'
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { Person } from './swagger/responses'
 import { CurrentUser } from 'src/shared/auth/decorators/current-user.decorator'
+import { IsPublic } from 'src/shared/auth/decorators/is-public.decorator'
 
 @Controller('people')
 @ApiTags('People')
@@ -57,6 +58,7 @@ export class PeopleController {
     description: 'The values have been successfully returned.',
     type: [Person]
   })
+  @IsPublic()
   async findAllPeople(@CurrentUser() user): Promise<IPerson[]> {
     try {
       const people = await this.peopleService.findAllPeople()
