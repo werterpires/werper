@@ -1,13 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  Put
-} from '@nestjs/common'
+import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common'
 import { TermsTypesService } from './terms-types.service'
 import { CreateTermsTypeDto } from './dto/create-terms-type.dto'
 import { UpdateTermsTypeDto } from './dto/update-terms-type.dto'
@@ -24,13 +15,15 @@ export class TermsTypesController {
   ) {}
 
   @Post()
-  @ApiOperation({ summary: 'create a new terms type.' })
+  @ApiOperation({
+    summary: 'create a new terms type.',
+    description: 'asdfasdfsad'
+  })
   @ApiResponse({
     status: 201,
     description: 'The record has been successfully created.',
     type: TermType
   })
-  @ApiResponse({})
   async createTermType(@Body() createTermsTypeDto: CreateTermsTypeDto) {
     try {
       const newTermType =

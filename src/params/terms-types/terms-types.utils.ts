@@ -37,7 +37,7 @@ export class TermsTypesUtils {
     for (let prop of Object.entries(termType)) {
       if (prop[1] === undefined) {
         throw new InternalServerErrorException(
-          `Propriedade ${prop[0]} não foi encontrada`
+          `#Propriedade ${prop[0]} não foi encontrada`
         )
       }
     }

@@ -22,8 +22,6 @@ export class TermsTypesService {
       const termTypeId =
         await this.termstypesRepository.createTermType(createTermTypeData)
 
-      console.log
-
       const newTermTypeData =
         await this.termstypesRepository.findTermTypeById(termTypeId)
 
