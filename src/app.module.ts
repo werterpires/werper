@@ -11,6 +11,7 @@ import * as dotenv from 'dotenv'
 import { JwtAuthGuard } from './shared/auth/guards/jwt-auth.guard'
 import { APP_GUARD } from '@nestjs/core'
 import { TermsModule } from './basics/terms/terms.module';
+import { RolesModule } from './basics/roles/roles.module';
 
 dotenv.config()
 
@@ -57,7 +58,8 @@ export const mysqlConfig: KnexModuleOptions = {
     UsersModule,
     AuthModule,
     TermsTypesModule,
-    TermsModule
+    TermsModule,
+    RolesModule
   ],
   controllers: [AppController],
   providers: [
