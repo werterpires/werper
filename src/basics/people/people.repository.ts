@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectKnex, Knex } from 'nestjs-knex'
-import { ICreatePersonData, IUpdatePersonData, IPerson } from './types'
+import { ICreatePerson, IUpdatePerson, IPerson } from './types'
 import { PeopleUtils } from './people.utils'
 import { ErrorsService } from 'src/shared/utils/errors.service'
 
@@ -12,7 +12,7 @@ export class PeopleRepository {
     private errorsService: ErrorsService
   ) {}
 
-  async createPerson(createPersonData: ICreatePersonData): Promise<IPerson> {
+  async createPerson(createPersonData: ICreatePerson): Promise<IPerson> {
     try {
       const {
         name,
@@ -106,9 +106,7 @@ export class PeopleRepository {
     }
   }
 
-  async updatePersonById(
-    updatePersonData: IUpdatePersonData
-  ): Promise<IPerson> {
+  async updatePersonById(updatePersonData: IUpdatePerson): Promise<IPerson> {
     try {
       const {
         personId,

@@ -4,7 +4,7 @@ import {
   BadRequestException,
   InternalServerErrorException
 } from '@nestjs/common'
-import { ICreatePersonData, IUpdatePersonData, IPerson } from '../types'
+import { ICreatePerson, IUpdatePerson, IPerson } from '../types'
 import { ValidatesService } from 'src/shared/utils/validates.service'
 import { CreatePersonDto } from '../dto/create-person.dto'
 import { UpdatePersonDto } from '../dto/update-person.dto'
@@ -325,7 +325,7 @@ describe('PeopleUtils', () => {
   describe('newCreatePersonData', () => {
     it('should create a new create person data', () => {
       //Arrange
-      const expected: ICreatePersonData = {
+      const expected: ICreatePerson = {
         name: 'João',
         surname: 'Silva',
         personType: 'f',
@@ -370,7 +370,7 @@ describe('PeopleUtils', () => {
 
   describe('newUpdatePersonData', () => {
     it('should create a new update person data', () => {
-      const expected: IUpdatePersonData = {
+      const expected: IUpdatePerson = {
         personId: 1,
         name: 'João',
         surname: 'Silva',

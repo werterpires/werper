@@ -6,7 +6,7 @@ import {
   InternalServerErrorException
 } from '@nestjs/common'
 import { PeopleRepository } from '../people.repository'
-import { ICreatePersonData, IUpdatePersonData, IPerson } from '../types'
+import { ICreatePerson, IUpdatePerson, IPerson } from '../types'
 import { PeopleUtils } from '../people.utils'
 import { CreatePersonDto } from '../dto/create-person.dto'
 import { UpdatePersonDto } from '../dto/update-person.dto'
@@ -73,7 +73,7 @@ const person2: IPerson = {
   phone: '555-4321',
   cellphone: null
 }
-const createPersonData1: ICreatePersonData = {
+const createPersonData1: ICreatePerson = {
   name: 'João',
   surname: 'Silva',
   personType: 'f',
@@ -92,7 +92,7 @@ const createPersonData1: ICreatePersonData = {
   cellphone: '555-5678'
 }
 
-const updatePersonData: IUpdatePersonData = {
+const updatePersonData: IUpdatePerson = {
   personId: 1,
   name: 'João',
   surname: 'Silva',

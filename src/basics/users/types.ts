@@ -1,6 +1,6 @@
 import { ERoles } from 'src/shared/roles/types'
 
-import { ICreatePersonData, IPerson } from '../people/types'
+import { ICreatePerson, IPerson } from '../people/types'
 
 export interface ICreateUser {
   passwordHash: string
@@ -23,7 +23,7 @@ export interface ICreateSignerUser extends ICreateUser {
   companiesNumber: number
   usersNumber: number
   price: number
-  companyPerson: ICreatePersonData
+  companyPerson: ICreatePerson
   companyDescription: string
   logged: boolean
   validate: Date
@@ -61,5 +61,5 @@ export interface IOccupationPermission {
 }
 
 export interface ICreateCompany {
-  person: ICreatePersonData
+  person: ICreatePerson
 }

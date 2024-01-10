@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common'
 import { CreatePersonDto } from './dto/create-person.dto'
 import { UpdatePersonDto } from './dto/update-person.dto'
-import { ICreatePersonData, IUpdatePersonData, IPerson } from './types'
+import { ICreatePerson, IUpdatePerson, IPerson } from './types'
 import { ValidatesService } from 'src/shared/utils/validates.service'
 
 @Injectable()
@@ -120,7 +120,7 @@ export class PeopleUtils {
     return person
   }
 
-  newCreatePersonData(createPersonDto: CreatePersonDto): ICreatePersonData {
+  newCreatePersonData(createPersonDto: CreatePersonDto): ICreatePerson {
     const errorMessage = this.validatesService.validatePerson(
       createPersonDto.cpf,
       createPersonDto.cnpj,
@@ -161,7 +161,7 @@ export class PeopleUtils {
     }
   }
 
-  newUpdatePersonData(updatePersonDto: UpdatePersonDto): IUpdatePersonData {
+  newUpdatePersonData(updatePersonDto: UpdatePersonDto): IUpdatePerson {
     const errorMessage = this.validatesService.validatePerson(
       updatePersonDto.cpf,
       updatePersonDto.cnpj,

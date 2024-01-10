@@ -5,7 +5,7 @@ import {
   InternalServerErrorException,
   NotFoundException
 } from '@nestjs/common'
-import { ICreatePersonData, IUpdatePersonData, IPerson } from '../types'
+import { ICreatePerson, IUpdatePerson, IPerson } from '../types'
 import { ValidatesService } from 'src/shared/utils/validates.service'
 import { CreatePersonDto } from '../dto/create-person.dto'
 import { UpdatePersonDto } from '../dto/update-person.dto'
@@ -54,7 +54,7 @@ const person2 = {
   phone: '555-4321',
   cellphone: null
 }
-const createPersonData1: ICreatePersonData = {
+const createPersonData1: ICreatePerson = {
   name: 'João',
   surname: 'Silva',
   personType: 'f',
@@ -73,7 +73,7 @@ const createPersonData1: ICreatePersonData = {
   cellphone: '555-5678'
 }
 
-const updatePersonData: IUpdatePersonData = {
+const updatePersonData: IUpdatePerson = {
   personId: 1,
   name: 'João',
   surname: 'Silva',
@@ -144,7 +144,7 @@ describe('PeopleRepository', () => {
   describe('createPerson', () => {
     it('should return a Person', async () => {
       //Arrange
-      const createPersonData: ICreatePersonData = createPersonData1
+      const createPersonData: ICreatePerson = createPersonData1
       const expected: IPerson = person1
 
       //Act
@@ -159,7 +159,7 @@ describe('PeopleRepository', () => {
 
     it('should throw Bad Request Exception ', () => {
       //Arrange
-      const createPersonData: ICreatePersonData = createPersonData1
+      const createPersonData: ICreatePerson = createPersonData1
       jest
         .spyOn(mockErrorsService, 'handleErrors')
         .mockReturnValueOnce(

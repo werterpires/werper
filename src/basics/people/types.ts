@@ -1,4 +1,4 @@
-export interface ICreatePersonData {
+export interface ICreatePerson {
   name: string
   surname: string | null
   personType: 'f' | 'j'
@@ -36,7 +36,7 @@ export interface IPerson {
   cellphone: string | null
 }
 
-export interface IUpdatePersonData {
+export interface IUpdatePerson {
   personId: number
   name?: string
   surname?: string | null
