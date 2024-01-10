@@ -16,8 +16,7 @@ export class TermsTypesController {
 
   @Post()
   @ApiOperation({
-    summary: 'create a new terms type.',
-    description: 'asdfasdfsad'
+    summary: 'create a new terms type.'
   })
   @ApiResponse({
     status: 201,
