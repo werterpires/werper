@@ -1,26 +1,42 @@
-import { Injectable } from '@nestjs/common';
-import { CreateRoleDto } from './dto/create-role.dto';
-import { UpdateRoleDto } from './dto/update-role.dto';
+import { Injectable } from '@nestjs/common'
+import { RolesUtils } from './roles.utils'
+import { RolesRepository } from './roles.repository'
+import { ErrorsService } from 'src/shared/utils/errors.service'
 
 @Injectable()
 export class RolesService {
-  create(createRoleDto: CreateRoleDto) {
-    return 'This action adds a new role';
+  constructor(
+    private readonly rolesUtils: RolesUtils,
+    private readonly rolesRepository: RolesRepository,
+    private readonly errorService: ErrorsService
+  ) {}
+
+  async findAllRoles() {
+    try {
+      const rolesData = await this.rolesRepository.findAllRoles()
+      const roles = this.rolesUtils.createRolesArrayFromDB(rolesData)
+      return roles
+    } catch (error) {
+      throw this.errorService.handleErrors(
+        error,
+        '#Não foi possível buscar todas os Papeis',
+        'service/findAllRoles'
+      )
+    }
   }
 
-  findAll() {
-    return `This action returns all roles`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} role`;
-  }
-
-  update(id: number, updateRoleDto: UpdateRoleDto) {
-    return `This action updates a #${id} role`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} role`;
+  async findRoleById(id: number) {
+    try {
+      const role = this.rolesUtils.createRoleFromDB(
+        await this.rolesRepository.findRoleById(id)
+      )
+      return role
+    } catch (error) {
+      throw this.errorService.handleErrors(
+        error,
+        '#Não foi possível encontrar o Papel',
+        'service/findRoleById'
+      )
+    }
   }
 }
